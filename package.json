@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "dev": "concurrently \"npm run dev --workspace @disasterwatch/api\" \"npm run dev --workspace @disasterwatch/web\"",
-    "build": "npm run build --workspace @disasterwatch/db && npm run build --workspace @disasterwatch/api && npm run build --workspace @disasterwatch/web",
+    "build": "npm run db:generate && npm run build --workspace @disasterwatch/db && npm run build --workspace @disasterwatch/api && npm run build --workspace @disasterwatch/web",
     "start": "concurrently \"npm run start --workspace @disasterwatch/api\" \"npm run start --workspace @disasterwatch/web\"",
     "lint": "npm run lint --workspace @disasterwatch/web && npm run lint --workspace @disasterwatch/api",
     "db:generate": "npm run db:generate --workspace @disasterwatch/db",
