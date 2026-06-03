@@ -1,0 +1,145 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+enum DisasterType {
+  EARTHQUAKE
+  FLOOD
+  WILDFIRE
+  CYCLONE
+  STORM
+  LANDSLIDE
+  HEATWAVE
+  OTHER
+}
+
+enum Severity {
+  LOW
+  MODERATE
+  HIGH
+  EXTREME
+}
+
+enum NotificationChannel {
+  SMS
+  EMAIL
+  PUSH
+}
+
+enum NotificationStatus {
+  PENDING
+  SENT
+  FAILED
+}
+
+model User {
+  id                 String             @id @default(cuid())
+  email              String             @unique
+  name               String
+  passwordHash       String?
+  googleId           String?            @unique
+  role               Role               @default(USER)
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+  locations          Location[]
+  emergencyContacts  EmergencyContact[]
+  notifications      Notification[]
+  alertPreferences   Alert[]
+}
+
+model Disaster {
+  id             String       @id @default(cuid())
+  title          String
+  type           DisasterType
+  severity       Severity
+  summary        String
+  latitude       Float
+  longitude      Float
+  radiusKm       Float
+  source         String
+  sourceUrl      String?
+  startedAt      DateTime
+  updatedAt      DateTime     @updatedAt
+  active         Boolean      @default(true)
+  aiScore        Float        @default(0)
+  recommendation String
+  alerts         Alert[]
+  analytics      Analytics[]
+
+  @@index([type, severity, active])
+  @@index([latitude, longitude])
+}
+
+model Location {
+  id        String   @id @default(cuid())
+  userId    String
+  label     String
+  latitude  Float
+  longitude Float
+  radiusKm  Float    @default(50)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+model EmergencyContact {
+  id        String   @id @default(cuid())
+  userId    String
+  name      String
+  phone     String
+  email     String?
+  relation  String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+model Alert {
+  id          String     @id @default(cuid())
+  userId      String?
+  disasterId  String
+  title       String
+  message     String
+  severity    Severity
+  channels    String[]
+  latitude    Float
+  longitude   Float
+  radiusKm    Float
+  acknowledged Boolean   @default(false)
+  createdAt   DateTime   @default(now())
+  user        User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  disaster    Disaster   @relation(fields: [disasterId], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id        String               @id @default(cuid())
+  userId    String
+  channel   NotificationChannel
+  status    NotificationStatus   @default(PENDING)
+  title     String
+  body      String
+  metadata  Json?
+  sentAt    DateTime?
+  createdAt DateTime             @default(now())
+  user      User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Analytics {
+  id          String       @id @default(cuid())
+  disasterId  String?
+  metric      String
+  value       Float
+  dimensions  Json
+  capturedAt  DateTime     @default(now())
+  disaster    Disaster?    @relation(fields: [disasterId], references: [id], onDelete: SetNull)
+
+  @@index([metric, capturedAt])
+}

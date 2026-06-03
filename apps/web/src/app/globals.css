@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import "leaflet/dist/leaflet.css";
+
+:root {
+  --background: 210 20% 98%;
+  --foreground: 222 34% 12%;
+  --border: 214 20% 86%;
+  --muted: 210 20% 92%;
+  --muted-foreground: 215 16% 42%;
+  --primary: 187 86% 33%;
+  --primary-foreground: 0 0% 100%;
+  --accent: 43 96% 48%;
+  --destructive: 0 72% 49%;
+  --ring: 187 86% 33%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+}
+
+.leaflet-container {
+  min-height: 480px;
+  height: 100%;
+  width: 100%;
+}
+
+.severity-low { background: #16a34a; }
+.severity-moderate { background: #eab308; }
+.severity-high { background: #f97316; }
+.severity-extreme { background: #dc2626; }
