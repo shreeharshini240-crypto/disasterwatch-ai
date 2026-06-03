@@ -1,15 +1,7 @@
 "use client";
 
-import { Circle, MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
-import L from "leaflet";
+import { Circle, CircleMarker, MapContainer, Popup, TileLayer } from "react-leaflet";
 import type { Disaster } from "@/lib/types";
-
-const icon = new L.Icon({
-  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41]
-});
 
 const colors = { LOW: "#16a34a", MODERATE: "#eab308", HIGH: "#f97316", EXTREME: "#dc2626" };
 
@@ -19,7 +11,16 @@ export default function MapInner({ disasters }: { disasters: Disaster[] }) {
       <TileLayer attribution="&copy; OpenStreetMap contributors" url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
       {disasters.map((disaster) => (
         <div key={disaster.id}>
-          <Marker position={[disaster.latitude, disaster.longitude]} icon={icon}>
+          <CircleMarker
+            center={[disaster.latitude, disaster.longitude]}
+            radius={10}
+            pathOptions={{
+              color: "#ffffff",
+              weight: 2,
+              fillColor: colors[disaster.severity],
+              fillOpacity: 1
+            }}
+          >
             <Popup>
               <strong>{disaster.title}</strong>
               <br />
@@ -27,7 +28,7 @@ export default function MapInner({ disasters }: { disasters: Disaster[] }) {
               <br />
               AI risk: {disaster.aiScore}
             </Popup>
-          </Marker>
+          </CircleMarker>
           <Circle
             center={[disaster.latitude, disaster.longitude]}
             radius={disaster.radiusKm * 1000}
