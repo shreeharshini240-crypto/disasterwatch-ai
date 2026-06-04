@@ -89,7 +89,7 @@ export default function Home() {
     if (!raw) return;
 
     const savedUser = JSON.parse(raw);
-    if (token === "demo-local-token" && savedUser.email === "admin@disasterwatch.ai") {
+    if (token !== "demo-admin-token" && savedUser.email === "admin@disasterwatch.ai") {
       localStorage.removeItem("dw_token");
       localStorage.removeItem("dw_user");
       return;
