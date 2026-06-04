@@ -11,7 +11,7 @@ import { Input } from "./ui/input";
 
 export function AuthPanel({ onAuth }: { onAuth: (user: User, token: string) => void }) {
   const [mode, setMode] = useState<"login" | "register">("login");
-  const [form, setForm] = useState({ name: "", email: "admin@disasterwatch.ai", password: "AdminPass123!" });
+  const [form, setForm] = useState({ name: "", email: "", password: "" });
   const [error, setError] = useState("");
 
   async function submit() {
@@ -55,13 +55,41 @@ export function AuthPanel({ onAuth }: { onAuth: (user: User, token: string) => v
               <h2 className="text-2xl font-bold">{mode === "login" ? "Sign in" : "Create account"}</h2>
               <p className="text-sm text-muted-foreground">Access your live disaster command center.</p>
             </div>
-            {mode === "register" && <Input placeholder="Full name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />}
-            <Input placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
-            <Input type="password" placeholder="Password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} />
+            {mode === "register" && (
+              <Input
+                placeholder="Full name"
+                autoComplete="name"
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+              />
+            )}
+            <Input
+              placeholder="Email"
+              type="email"
+              autoComplete="off"
+              name="disasterwatch-login-email"
+              value={form.email}
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
+            />
+            <Input
+              type="password"
+              placeholder="Password"
+              autoComplete="new-password"
+              name="disasterwatch-login-password"
+              value={form.password}
+              onChange={(e) => setForm({ ...form, password: e.target.value })}
+            />
             {error && <div className="rounded-md bg-red-50 p-3 text-sm text-red-700">{error}</div>}
             <Button className="w-full" onClick={submit}>{mode === "login" ? "Sign in" : "Create account"}</Button>
             <Button className="w-full" variant="secondary" onClick={demoGoogle}>Continue with Google</Button>
-            <button className="w-full text-sm font-medium text-primary" onClick={() => setMode(mode === "login" ? "register" : "login")}>
+            <button
+              className="w-full text-sm font-medium text-primary"
+              onClick={() => {
+                setError("");
+                setForm({ name: "", email: "", password: "" });
+                setMode(mode === "login" ? "register" : "login");
+              }}
+            >
               {mode === "login" ? "Create a new account" : "Use an existing account"}
             </button>
           </CardContent>
