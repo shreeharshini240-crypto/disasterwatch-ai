@@ -85,7 +85,17 @@ export default function Home() {
 
   useEffect(() => {
     const raw = localStorage.getItem("dw_user");
-    if (raw) setUser(JSON.parse(raw));
+    const token = localStorage.getItem("dw_token");
+    if (!raw) return;
+
+    const savedUser = JSON.parse(raw);
+    if (token === "demo-local-token" && savedUser.email === "admin@disasterwatch.ai") {
+      localStorage.removeItem("dw_token");
+      localStorage.removeItem("dw_user");
+      return;
+    }
+
+    setUser(savedUser);
   }, []);
 
   useEffect(() => {

@@ -183,8 +183,9 @@ async function fallbackResponse<T>(path: string, options: RequestInit): Promise<
   const method = options.method ?? "GET";
 
   if (path === "/auth/login" && method === "POST") {
+    const body = typeof options.body === "string" ? JSON.parse(options.body) : {};
     return {
-      user: { id: "demo-admin", email: "admin@disasterwatch.ai", name: "DisasterWatch Admin", role: "ADMIN" },
+      user: { id: "demo-user", email: body.email ?? "user@disasterwatch.ai", name: "Website User", role: "USER" },
       token: "demo-local-token"
     } as T;
   }
